@@ -413,8 +413,6 @@
     HKQuantityType *waterType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierDietaryWater];
     HKUnit *waterUnit = [HKUnit literUnit];
 
-    NSPredicate * predicate = [RCTAppleHealthKit predicateForSamplesBetweenDates:startDate endDate:endDate];
-
     [self fetchSumOfSamplesOnDayForType:waterType
                                 unit:waterUnit
                            day:date
