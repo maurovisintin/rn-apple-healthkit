@@ -12,5 +12,6 @@
 
 - (void)saveFood:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
 - (void)saveWater:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
+- (void)water_get:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
 
 @end
