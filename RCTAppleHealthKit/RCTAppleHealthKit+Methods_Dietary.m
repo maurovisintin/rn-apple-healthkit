@@ -408,42 +408,28 @@
 
 - (void)water_get:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
 {
-    NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:nil];
-    NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:[NSDate date]];
-    HKUnit unit = [RCTAppleHealthKit hkUnitFromOptions:input key:@"unit" withDefault:[HKUnit literUnit]];
+    NSDate *date = [RCTAppleHealthKit dateFromOptions:input key:@"date" withDefault:[NSDate date]];
 
     HKQuantityType *waterType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierDietaryWater];
-
-    // HKQuantitySample* water = [HKQuantitySample quantitySampleWithType:[HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierDietaryWater]
-    //                                                             quantity:[HKQuantity quantityWithUnit:[HKUnit literUnit] doubleValue:waterValue]
-    //                                                             startDate:timeWaterWasConsumed
-    //                                                             endDate:timeWaterWasConsumed
-    //                                                             metadata:nil];
-
-    // Save the water Sample to HealthKit //
-    // [self.healthStore fetchQuantitySamplesOfType:water withCompletion:^(BOOL success, NSError *error) {
-    //     if (!success) {
-    //         NSLog(@"An error occured saving the water sample %@. The error was: ", error);
-    //         callback(@[RCTMakeError(@"An error occured saving the water sample", error, nil)]);
-    //         return;
-    //     }
-    //     callback(@[[NSNull null], @true]);
-    // }];
+    HKUnit *waterUnit = [HKUnit literUnit];
 
     NSPredicate * predicate = [RCTAppleHealthKit predicateForSamplesBetweenDates:startDate endDate:endDate];
 
-    [self fetchQuantitySamplesOfType:waterType
-                                unit:unit
-                           predicate:predicate
-                           ascending:ascending
-                               limit:limit
-                          completion:^(NSArray *results, NSError *error) {
-        if(results){
-            callback(@[[NSNull null], results]);
+    [self fetchSumOfSamplesOnDayForType:waterType
+                                unit:waterUnit
+                           day:date
+                          completion:^(double value, NSDate *startDate, NSDate *endDate, NSError *error) {
+        if(value){
+              NSDictionary *response = @{
+                 @"value" : @(value),
+                 @"startDate" : [RCTAppleHealthKit buildISO8601StringFromDate:startDate],
+                 @"endDate" : [RCTAppleHealthKit buildISO8601StringFromDate:endDate],
+         };
+            callback(@[[NSNull null], response]);
             return;
         } else {
-            NSLog(@"error getting water samples: %@", error);
-            callback(@[RCTMakeError(@"error getting water samples", nil, nil)]);
+            NSLog(@"error getting water: %@", error);
+            callback(@[RCTMakeError(@"error getting water", nil, nil)]);
             return;
         }
     }];
