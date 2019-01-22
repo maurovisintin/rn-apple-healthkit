@@ -183,6 +183,7 @@
     return writePermArray;
 }
 
+NSString * const Other = @"Other";
 NSString * const AmericanFootball = @"AmericanFootball";
 NSString * const Archery = @"Archery";
 NSString * const AustralianFootball = @"AustralianFootball";
@@ -258,6 +259,7 @@ NSString * const HandCycling = @"HandCycling";
 
 + (NSDictionary *)getStringToWorkoutActivityTypeDictionary {
     return @{
+        Other: @(HKWorkoutActivityTypeOther),
              AmericanFootball: @(HKWorkoutActivityTypeAmericanFootball),
              Archery: @(HKWorkoutActivityTypeArchery),
              AustralianFootball: @(HKWorkoutActivityTypeAustralianFootball),
@@ -335,6 +337,7 @@ NSString * const HandCycling = @"HandCycling";
 
 + (NSDictionary *)getNumberToWorkoutNameDictionary {
     return @{
+            @(HKWorkoutActivityTypeOther) : Other,
              @(HKWorkoutActivityTypeAmericanFootball) : AmericanFootball,
              @(HKWorkoutActivityTypeArchery) : Archery,
              @(HKWorkoutActivityTypeAustralianFootball) : AustralianFootball,
