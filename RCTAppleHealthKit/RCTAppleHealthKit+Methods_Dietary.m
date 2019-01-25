@@ -433,4 +433,50 @@
     }];
 }
 
+- (void)water_delete:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+
+    NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:[NSDate date]];
+    NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:[NSDate date]];
+
+    // NSDate *startDate = [dateOfSampleToDelete dateByAddingTimeInterval:0];
+    // NSDate *endDate = [dateOfSampleToDelete dateByAddingTimeInterval:1];
+
+    // the type you're trying to delete (this could be heart-beats/steps/water/calories/etc..)
+    HKQuantityType *waterType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierDietaryWater];
+
+    // the predicate used to execute the query
+    NSPredicate *queryPredicate = [HKSampleQuery predicateForSamplesWithStartDate:startDate endDate:endDate options:HKQueryOptionNone];
+
+    // prepare the query
+    HKSampleQuery *query = [[HKSampleQuery alloc] initWithSampleType:waterType predicate:queryPredicate limit:100 sortDescriptors:nil resultsHandler:^(HKSampleQuery * _Nonnull query, NSArray<__kindof HKSample *> * _Nullable results, NSError * _Nullable error) {
+
+        if (error) {
+
+            NSLog(@"Error: %@", error.description);
+
+        } else {
+
+            NSLog(@"Successfully retreived samples");
+
+            // now that we retrieved the samples, we can delete it/them
+            [self.healthStore deleteObject:[results firstObject] withCompletion:^(BOOL success, NSError * _Nullable error) {
+                        if(success){
+              callback(@[[NSNull null], @true]);
+                    return;
+         
+        } else {
+            NSLog(@"error deleting water: %@", error);
+                    callback(@[RCTMakeError(@"error deleting water", nil, nil)]);
+                    return;
+        }
+            }];
+
+        }
+    }];
+
+    // last but not least, execute the query
+    [self.healthStore executeQuery:query];
+}
+
 @end

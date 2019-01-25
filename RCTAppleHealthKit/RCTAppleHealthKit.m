@@ -162,6 +162,11 @@ RCT_EXPORT_METHOD(getWater:(NSDictionary *)input callback:(RCTResponseSenderBloc
     [self water_get:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(deleteWater:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self water_delete:input callback:callback];
+}
+
 RCT_EXPORT_METHOD(getHeartRateSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self vitals_getHeartRateSamples:input callback:callback];
