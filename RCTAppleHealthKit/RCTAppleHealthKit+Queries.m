@@ -464,11 +464,12 @@
                     double energy = [[sample totalEnergyBurned] doubleValueForUnit:[HKUnit kilocalorieUnit]];
                     double distance = [[sample totalDistance] doubleValueForUnit:[HKUnit mileUnit]];
                     NSNumber *activityNumber =  [NSNumber numberWithInt: [sample workoutActivityType]];
+                    NSString *source = sample.source.name;
                     
                     NSDictionary *elem = @{
                                            @"activityName" : [numberToWorkoutNameDictionary objectForKey: activityNumber],
                                            @"calories" : @(energy),
-                                           @"distance" : @(distance),
+                                           @"source" : source,
                                            @"start" : [RCTAppleHealthKit buildISO8601StringFromDate:sample.startDate],
                                            @"end" : [RCTAppleHealthKit buildISO8601StringFromDate:sample.endDate]
                                            };
