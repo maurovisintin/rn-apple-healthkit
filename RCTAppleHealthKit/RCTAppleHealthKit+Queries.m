@@ -81,11 +81,13 @@
                     HKQuantity *quantity = sample.quantity;
                     double value = [quantity doubleValueForUnit:unit];
 
+                    NSString *source = sample.source.name;
                     NSString *startDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.startDate];
                     NSString *endDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.endDate];
 
                     NSDictionary *elem = @{
                             @"value" : @(value),
+                            @"source" : source,
                             @"startDate" : startDateString,
                             @"endDate" : endDateString,
                     };
