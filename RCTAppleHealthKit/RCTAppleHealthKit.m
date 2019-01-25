@@ -237,6 +237,12 @@ RCT_EXPORT_METHOD(saveWorkout:(NSDictionary *)input callback:(RCTResponseSenderB
     [self workout_save:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(deleteWorkout:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self workout_delete:input callback:callback];
+}
+
+
 RCT_EXPORT_METHOD(getAuthStatus: (NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self getAuthorizationStatus:input callback:callback];
