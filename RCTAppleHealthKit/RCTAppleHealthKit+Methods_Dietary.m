@@ -472,9 +472,6 @@
     NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:[NSDate date]];
     NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:[NSDate date]];
 
-    // NSDate *startDate = [dateOfSampleToDelete dateByAddingTimeInterval:0];
-    // NSDate *endDate = [dateOfSampleToDelete dateByAddingTimeInterval:1];
-
     // the type you're trying to delete (this could be heart-beats/steps/water/calories/etc..)
     HKQuantityType *waterType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierDietaryWater];
 
@@ -485,26 +482,27 @@
     HKSampleQuery *query = [[HKSampleQuery alloc] initWithSampleType:waterType predicate:queryPredicate limit:100 sortDescriptors:nil resultsHandler:^(HKSampleQuery * _Nonnull query, NSArray<__kindof HKSample *> * _Nullable results, NSError * _Nullable error) {
 
         if (error) {
-
             NSLog(@"Error: %@", error.description);
-
+            callback(@[[NSNull null], @false]);
         } else {
+            int size = [results count];
+            if (size > 0) {
+                NSLog(@"Successfully retreived samples");
 
-            NSLog(@"Successfully retreived samples");
-
-            // now that we retrieved the samples, we can delete it/them
-            [self.healthStore deleteObject:[results firstObject] withCompletion:^(BOOL success, NSError * _Nullable error) {
+                // now that we retrieved the samples, we can delete it/them
+                [self.healthStore deleteObject:[results firstObject] withCompletion:^(BOOL success, NSError * _Nullable error) {
                         if(success){
-              callback(@[[NSNull null], @true]);
-                    return;
-         
-        } else {
-            NSLog(@"error deleting water: %@", error);
-                    callback(@[RCTMakeError(@"error deleting water", nil, nil)]);
-                    return;
-        }
-            }];
-
+                            callback(@[[NSNull null], @true]);
+                        return;
+                        } else {
+                            NSLog(@"error deleting water: %@", error);
+                            callback(@[RCTMakeError(@"error deleting water", nil, nil)]);
+                            return;
+                        }
+                }];
+            } else {
+                callback(@[[NSNull null], @true]);
+            }
         }
     }];
 
