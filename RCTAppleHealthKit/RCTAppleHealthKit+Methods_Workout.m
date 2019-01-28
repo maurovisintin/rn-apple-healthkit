@@ -83,24 +83,27 @@
     // prepare the query
     HKSampleQuery *query = [[HKSampleQuery alloc] initWithSampleType:[HKObjectType workoutType] predicate:queryPredicate limit:100 sortDescriptors:nil resultsHandler:^(HKSampleQuery * _Nonnull query, NSArray<__kindof HKSample *> * _Nullable results, NSError * _Nullable error) {
         if (error) {
-
             NSLog(@"Error: %@", error.description);
-
+            callback(@[[NSNull null], @false]);
         } else {
+            int size = [results count];
+            if (size > 0) {
+                NSLog(@"Successfully retreived samples");
 
-            NSLog(@"Successfully retreived samples");
-
-            // now that we retrieved the samples, we can delete it/them
-            [self.healthStore deleteObject:[results firstObject] withCompletion:^(BOOL success, NSError * _Nullable error) {
-                if(success){
-                    callback(@[[NSNull null], @true]);
-                    return;
-                } else {
-                    NSLog(@"error deleting workout: %@", error);
-                            callback(@[RCTMakeError(@"error deleting workout", nil, nil)]);
-                            return;
-                }
-            }];
+                // now that we retrieved the samples, we can delete it/them
+                [self.healthStore deleteObject:[results firstObject] withCompletion:^(BOOL success, NSError * _Nullable error) {
+                    if(success){
+                        callback(@[[NSNull null], @true]);
+                        return;
+                    } else {
+                        NSLog(@"error deleting workout: %@", error);
+                                callback(@[RCTMakeError(@"error deleting workout", nil, nil)]);
+                                return;
+                    }
+                }];
+            } else {
+                callback(@[[NSNull null], @true]);
+            }
         }
     }];
 
